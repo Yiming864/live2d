@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Live2D 皮套 · 人脸驱动</title>
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<div id="app">
+
+  <main id="viewport">
+    <canvas id="stage"></canvas>
+    <div id="hud"></div>
+  </main>
+
+  <aside id="panel">
+    <h1>皮套控制 <span id="build" title="构建版本">__BUILD__</span></h1>
+    <div id="status" class="status">初始化…</div>
+
+    <div class="toolbar">
+      <button id="btnCam" class="primary">开启摄像头</button>
+      <button data-expr="smile">微笑</button>
+      <button data-expr="laugh">大笑</button>
+      <button data-expr="blink">闭眼笑</button>
+      <button data-expr="calm">平静</button>
+      <button data-expr="open">张嘴</button>
+    </div>
+
+    <div class="toggles">
+      <label><input type="checkbox" id="chkTrack" checked> 人脸追踪</label>
+      <label><input type="checkbox" id="chkMesh"> 显示网格</label>
+      <label><input type="checkbox" id="chkFlipX"> 左右反向</label>
+      <label><input type="checkbox" id="chkFlipY"> 上下反向</label>
+      <button id="btnReset" class="ghost">重置滑杆</button>
+      <button id="btnGhost">残影自检</button>
+    </div>
+
+    <!-- 背景图：直播/录制时铺在皮套后面 -->
+    <div class="group">
+      <h3>背景</h3>
+      <div class="toolbar">
+        <button id="btnBg">导入背景图</button>
+        <button id="btnBgClear" class="ghost">清除背景</button>
+      </div>
+      <input type="file" id="fileBg" accept="image/*" hidden>
+      <p class="hint" style="margin:0 0 6px">
+        也可以直接把图片拖到左边的画面里。图片按 <b>cover</b> 铺满，不会变形。
+      </p>
+    </div>
+
+    <!-- 直播 / 录制：一键隐藏所有界面元素 -->
+    <div class="group">
+      <h3>直播 / 录制</h3>
+      <div class="toggles" style="margin-bottom:6px">
+        <label><input type="checkbox" id="chkLive"> 直播模式（隐藏界面）</label>
+        <button id="btnFull">全屏</button>
+      </div>
+      <p class="hint" style="margin:0">
+        开启后隐藏摄像头预览、数据面板与控制栏，只留皮套和背景。<br>
+        快捷键 <b>H</b> 切换直播模式、<b>F</b> 全屏（<b>Esc</b> 退出）；
+        <b>Ctrl/Cmd + S</b> 把当前画面存成 PNG。<br>
+        全屏时画布会变成屏幕比例，<b>背景图铺满整个屏幕</b>，皮套居中按比例放大。
+      </p>
+    </div>
+
+    <video id="cam" playsinline muted></video>
+    <p class="hint">双击滑杆可解除该项的手动覆盖。开启摄像头后皮套即跟随你转动。</p>
+
+    <div id="sliders"></div>
+  </aside>
+
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

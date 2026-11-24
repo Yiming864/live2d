@@ -1,0 +1,150 @@
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%;
+  background: #0e0f13; color: #e6e8ee;
+  font-family: "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+}
+#app { display: flex; height: 100vh; overflow: hidden; }
+
+#viewport {
+  flex: 1; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(circle at 50% 35%, #23262f 0%, #12141a 60%, #0b0c10 100%);
+  overflow: hidden;
+}
+#stage {
+  display: block;
+  filter: drop-shadow(0 24px 48px rgba(0,0,0,.55));
+}
+/* 设了背景图之后，去掉四周的暗角与投影，让背景干净地铺满 */
+body.has-bg #viewport { background: #000; }
+body.has-bg #stage { filter: none; }
+
+/* 拖拽导入背景时的高亮提示 */
+#viewport.drag-over { outline: 3px dashed #4a9eff; outline-offset: -6px; }
+#viewport.drag-over::after {
+  content: "松开即可设为背景";
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  background: rgba(10,12,16,.85); color: #cfe3ff;
+  padding: 10px 18px; border-radius: 8px; border: 1px solid #3182ce;
+  font-size: 13px; pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+   直播模式
+   隐藏一切界面元素，只保留皮套与背景。
+   用 body.live 控制，而不是逐个 display:none —— 这样
+   「有哪些东西属于界面」这件事只在一个地方定义。
+   ------------------------------------------------------------------ */
+body.live #panel,
+body.live #hud,
+body.live #cam { display: none !important; }
+
+/* 直播时画面占满整个窗口 */
+body.live #app { display: block; }
+body.live #viewport {
+  position: fixed; inset: 0; background: transparent;
+}
+body.live #stage { filter: none; }
+
+/* 直播时鼠标静止自动隐藏，避免录进光标 */
+body.live.idle { cursor: none; }
+
+/* ------------------------------------------------------------------
+   全屏
+   画布的 CSS 尺寸由 main.js 的 applyViewport() 精确设置
+   （全屏时改成屏幕比例，这样背景图能铺满整个屏幕），
+   所以这里只负责容器本身，不干预画布尺寸。
+   ------------------------------------------------------------------ */
+#viewport:fullscreen {
+  background: #000;
+  width: 100vw; height: 100vh;
+}
+#viewport:fullscreen #stage { filter: none; }
+#viewport:-webkit-full-screen { background: #000; }
+/* 全屏时即使没开直播模式，也把左下角的数据浮层收起来 */
+body.fs #hud { display: none !important; }
+
+#hud {
+  position: absolute; left: 14px; top: 12px;
+  font-size: 12px; color: #8b93a7;
+  background: rgba(10,12,16,.6);
+  padding: 6px 10px; border-radius: 6px;
+  border: 1px solid #232733;
+  font-variant-numeric: tabular-nums;
+}
+#hud b { color: #cfd6e6; }
+
+#panel {
+  width: 320px; flex: none;
+  background: #14161c;
+  border-left: 1px solid #232733;
+  padding: 16px; overflow-y: auto;
+}
+#panel h1 { font-size: 16px; margin: 0 0 10px; letter-spacing: .5px; }
+/* 构建版本号：用于一眼确认浏览器加载的是不是最新代码 */
+#build {
+  font-size: 10px; font-weight: 400; color: #4a9eff;
+  background: #10131a; border: 1px solid #232733;
+  border-radius: 4px; padding: 1px 5px; margin-left: 6px;
+  vertical-align: middle; font-variant-numeric: tabular-nums;
+}
+/* 与服务器版本不一致时高亮（说明这是缓存的旧页面） */
+#build.stale { background: #4a1d1d; border-color: #7a3b3b; color: #ffb4b4; }
+
+.status {
+  font-size: 12px; color: #7ec8a0; background: #10131a;
+  border: 1px solid #232733; border-radius: 6px;
+  padding: 7px 9px; margin-bottom: 12px;
+  word-break: break-all;
+}
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+button {
+  background: #1d212b; color: #cfd6e6;
+  border: 1px solid #2c3240; border-radius: 6px;
+  padding: 6px 10px; font-size: 12px; cursor: pointer;
+  transition: .15s;
+}
+button:hover { background: #262c39; border-color: #3a4256; }
+button.primary { background: #2b6cb0; border-color: #3182ce; color: #fff; }
+button.primary:hover { background: #3182ce; }
+button.ghost { background: transparent; }
+button.on { background: #2f855a; border-color: #38a169; color: #fff; }
+
+.toggles {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  font-size: 12px; margin-bottom: 12px; color: #9aa3b6;
+}
+.toggles label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
+#cam {
+  width: 100%; border-radius: 8px; margin-bottom: 8px;
+  transform: scaleX(-1);
+  background: #0b0c10; border: 1px solid #232733;
+  display: none;
+}
+#cam.on { display: block; }
+
+.hint { font-size: 11px; color: #6c7488; line-height: 1.6; margin: 0 0 14px; }
+
+.group { margin-bottom: 14px; }
+.group h3 {
+  font-size: 11px; color: #68708a; margin: 0 0 6px;
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+}
+.row {
+  display: grid; grid-template-columns: 74px 1fr 38px;
+  align-items: center; gap: 6px; margin-bottom: 4px;
+  font-size: 11px; color: #98a1b5;
+}
+.row input[type=range] {
+  width: 100%; height: 3px; -webkit-appearance: none;
+  background: #2a3040; border-radius: 2px; outline: none;
+}
+.row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 11px; height: 11px;
+  border-radius: 50%; background: #4a9eff; cursor: pointer;
+}
+.row em { font-style: normal; color: #6c7488; text-align: right; font-variant-numeric: tabular-nums; }
