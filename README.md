@@ -1,3 +1,4 @@
+以下为AI生成，我看不懂，一切以实物为准。
 # Live2D Pet · 从分层 PSD 到可直接使用的人脸驱动网页皮套
 
 > 输入一份 **See-through 分层 PSD**，输出一个**本机打开即用**的网页版 Live2D 皮套（摄像头人脸驱动）。不需要 Cubism Editor，不需要 Live2D SDK，不需要联网。
