@@ -363,11 +363,11 @@ def main():
     print("    2) 浏览器打开 http://127.0.0.1:8777/  （Ctrl+Shift+R 强制刷新）")
     print("    3) 开启摄像头后皮套即跟随；直播模式按 H，全屏按 F")
     if args.check:
-        node = shutil.which("node") or os.environ.get(
-            "NODE",
-            r"C:\Users\91567\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin\node.exe")
-        if not os.path.exists(node):
-            print("  [!] 找不到 node，跳过行为自检")
+        # 跨平台查找 node：优先 PATH，其次 NODE 环境变量。都找不到就跳过自检
+        # （不要写死本机绝对路径——那既泄露个人信息，换台机器也会失效）。
+        node = shutil.which("node") or os.environ.get("NODE")
+        if not node or not os.path.exists(node):
+            print("  [!] 找不到 node（PATH 或 NODE 环境变量均未指向可执行文件），跳过行为自检")
             return
         print("\n—— 行为自检 ——")
         r = subprocess.run([node, CHECKER, out], capture_output=True, text=True,

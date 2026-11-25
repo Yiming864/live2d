@@ -9,20 +9,20 @@ description: 从一份 See-through 已分层的 PSD，生成能直接使用的�
 
 ## 第 0 步：环境
 
-Python 与 Node 都用 DSH 运行时自带的（不要假设在 PATH 里）：
+Python 与 Node 用本机可用的解释器（下面用占位符，按实际环境替换）：
 
 ```
-PY   = C:\Users\91567\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe
-NODE = C:\Users\91567\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin\node.exe
+PY   = <Python 可执行文件绝对路径>
+NODE = <Node 可执行文件绝对路径>
 ```
 
-本机 pip 被沙箱限制，`psd-tools/numpy/Pillow` 已装在 `D:\工作区\pylibs`，跑脚本前设：
+`psd-tools/numpy/Pillow` 需要在 Python 能 import 到的位置；若 pip 受限，可把它们解包到某个本地目录并设：
 
 ```
-PYTHONPATH = D:\工作区\pylibs
+PYTHONPATH = <第三方库目录>
 ```
 
-缺库时：从 PyPI 下载对应 cp312 win_amd64 wheel 用 zipfile 解包进 pylibs（不要 pip install）。pyd/pyc 跨平台 wheel 装不得——认准 `cp312-cp312-win_amd64` 或 `py3-none-any`。
+缺库时：从 PyPI 下载对应 wheel 用 zipfile 解包进该目录（pip 可用时直接 pip install 更省事）。pyd/pyc 跨平台 wheel 装不得——wheel 的 ABI/平台标签要与本机 Python 匹配，例如 CPython 3.12 / Windows x64 对应 `cp312-cp312-win_amd64`；纯 Python 包用 `py3-none-any`。
 
 ## 第 1 步：检查 PSD → 生成
 
@@ -51,7 +51,7 @@ python make_avatar.py <输入.psd> <输出目录> --name <角色名> --check
 
 ## 铁律
 
-- **标准品 `D:\工作区\pet\` 与它的 19 套测试不许动**。那是行为基准；skill 的 template 是它的参数化副本（已验证等价：连同脖子二阶差分 0.000132 都一致）。
+- **标准品皮套目录与它的测试集不许动**（本机路径用 `<标准品目录>` 占位，不写死）。那是行为基准；skill 的 template 是它的参数化副本（已验证等价：连同脖子二阶差分 0.000132 都一致）。
 - **同一症状修三轮还在，停止改代码**——大角度转头的纸片感是"拉伸正面原画"固有的（Live2D 规则：单张正面原画只做小角度转头，大角度要侧脸素材）。
 - 头部姿态已限幅 ±30°（超限停止追踪，HUD 显示"限幅"）——这是故意的，不是 bug。
 
